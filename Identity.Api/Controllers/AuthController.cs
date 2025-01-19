@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Identity.Application.Contracts;
+using Identity.Application.Contracts.Models;
+using Identity.Domain.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.Api.Controllers
@@ -7,5 +11,28 @@ namespace Identity.Api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private IAuthService _authService;
+
+        public AuthController(IAuthService authService)
+        {
+            _authService = authService;
+        }
+
+        [HttpPost("Login")]
+        public async Task<ActionResult> Login(LoginDto loginDto)
+        {
+            var result = await _authService.Login(loginDto);
+            if(result == null)
+            {
+                return Unauthorized("Credenciales incorrectas");
+            }
+            return Ok(result);
+        }
+        [HttpPost("CreateUser")]
+        public async Task<ActionResult> CreateUser(ApplicationUser usuario)
+        {
+            var result = await _authService.AddUser(usuario);
+            if (result) { return Created(); } else { return BadRequest(); }
+        }
     }
 }

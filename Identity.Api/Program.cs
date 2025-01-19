@@ -1,3 +1,4 @@
+using Identity.Domain.Entities;
 using Identity.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
@@ -20,10 +21,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapIdentityApi<IdentityUser>();
+//app.MapIdentityApi<ApplicationUser>();
 
 
 app.MapControllers();

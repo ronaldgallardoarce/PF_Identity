@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.Context
 {
-    public class ContextPostgreSQL : IdentityDbContext<IdentityUser>
+    public class ContextPostgreSQL : IdentityDbContext<ApplicationUser, IdentityRole, string>
     {
-        public ContextPostgreSQL(DbContextOptions options) : base(options)
+        public ContextPostgreSQL(DbContextOptions<ContextPostgreSQL> options) : base(options)
         {
         }
         public DbSet<UserProfile> UserProfiles { get; set; }
@@ -18,7 +18,8 @@ namespace Identity.Infrastructure.Context
             builder.Entity<UserProfile>()
                 .HasOne(p => p.User)
                 .WithOne()
-                .HasForeignKey<UserProfile>(p => p.UserId);
+                .HasForeignKey<UserProfile>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
