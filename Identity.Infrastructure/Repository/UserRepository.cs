@@ -37,7 +37,7 @@ namespace Identity.Infrastructure.Repository
             return new TokenDto
             {
                 Token = token,
-                Expiration = DateTime.UtcNow.AddDays(1) // Configuración del tiempo de expiración
+                Expiration = DateTime.UtcNow.AddDays(1)
             };
         }
 

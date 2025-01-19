@@ -2,12 +2,6 @@
 using Identity.Application.Contracts.Models;
 using Identity.Application.Contracts.Repositories;
 using Identity.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Identity.Application.Services
 {

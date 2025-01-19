@@ -52,6 +52,8 @@ namespace Identity.Infrastructure
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IJwtTokenRepository, JwtTokenRepository>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
             return services;
         }
     }
