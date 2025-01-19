@@ -1,8 +1,16 @@
-﻿using Identity.Infrastructure.Context;
+﻿using Identity.Application.Contracts;
+using Identity.Application.Contracts.Repositories;
+using Identity.Application.Services;
+using Identity.Domain.Entities;
+using Identity.Infrastructure.Context;
+using Identity.Infrastructure.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Identity.Infrastructure
 {
@@ -14,21 +22,36 @@ namespace Identity.Infrastructure
                 options.UseNpgsql(configuration.GetConnectionString("conexion")));
 
             services.AddAuthorization();
-
-            services.AddIdentityApiEndpoints<IdentityUser>(opt =>
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                opt.Password.RequiredLength = 8;
-                opt.Password.RequireDigit = true;
-                opt.Password.RequireNonAlphanumeric = false;
-                opt.Password.RequireUppercase = true;
-                opt.Password.RequireLowercase = true;
-                opt.User.RequireUniqueEmail = true;
-                opt.SignIn.RequireConfirmedEmail = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
             })
-                    .AddDefaultUI()
-                    .AddEntityFrameworkStores<ContextPostgreSQL>();
+                .AddEntityFrameworkStores<ContextPostgreSQL>()
+                .AddDefaultTokenProviders();
 
-            //services.AddScoped<IAuthService, AuthService>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidAudience = configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                }
+                );
+
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IJwtTokenRepository, JwtTokenRepository>();
             return services;
         }
     }

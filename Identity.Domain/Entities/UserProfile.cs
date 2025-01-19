@@ -11,9 +11,8 @@ namespace Identity.Domain.Entities
         public string LastName { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string Address { get; set; }
-        public string PhoneNumber { get; set; }
 
         // Relación con Identity
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }
