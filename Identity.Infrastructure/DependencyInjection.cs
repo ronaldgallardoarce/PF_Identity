@@ -4,6 +4,7 @@ using Identity.Application.Services;
 using Identity.Domain.Entities;
 using Identity.Infrastructure.Context;
 using Identity.Infrastructure.Repository;
+using Identity.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +57,10 @@ namespace Identity.Infrastructure
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
             }
             );
+
+            //middleware
+            services.AddSingleton<IJwtValidator, JwtTokenValidator>();
+            services.AddSingleton(sp => new JwtTokenValidator(configuration["Jwt:Key"]));
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAuthRepository, AuthRepository>();
