@@ -1,5 +1,6 @@
 ﻿using Identity.Application.Contracts.Models;
 using Identity.Application.Contracts.Repositories;
+using Identity.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,19 +9,34 @@ namespace Identity.Infrastructure.Repository
     public class RoleRepository : IRoleRepository
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+        private UserManager<ApplicationUser> _userManager;
 
-        public RoleRepository(RoleManager<IdentityRole> roleManager)
+        public RoleRepository(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             _roleManager = roleManager;
+            _userManager = userManager;
+        }
+
+        public async Task<bool> AssignRoleToUserAsync(ApplicationUser user, string roleName)
+        {
+            if(!await _userManager.IsInRoleAsync(user, roleName))
+            {
+                await _userManager.AddToRoleAsync(user, roleName);
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> CreateRole(string name)
         {
-            var identityRole = new IdentityRole { Name = name };
-            IdentityResult result = await _roleManager.CreateAsync(identityRole);
-            if (result.Succeeded)
+            if(!await RoleExistAsync(name))
             {
-                return true;
+                var identityRole = new IdentityRole { Name = name };
+                IdentityResult result = await _roleManager.CreateAsync(identityRole);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
             }
             return false;
         }
@@ -58,6 +74,11 @@ namespace Identity.Infrastructure.Repository
                 Id = role.Id,
                 Name = role.Name
             };
+        }
+
+        public async Task<bool> RoleExistAsync(string name)
+        {
+            return await _roleManager.RoleExistsAsync(name);
         }
 
         public async Task<bool> UpdateRole(RoleDto role)

@@ -1,4 +1,5 @@
 ﻿using Identity.Application.Contracts.Models;
+using Identity.Domain.Entities;
 
 namespace Identity.Application.Contracts.Repositories
 {
@@ -9,5 +10,7 @@ namespace Identity.Application.Contracts.Repositories
         Task<RoleDto> GetRole(string id);
         Task<IEnumerable<RoleDto>> GetAllRoles();
         Task<bool> DeleteRole(string id);
+        Task<bool> RoleExistAsync(string name);
+        Task<bool> AssignRoleToUserAsync(ApplicationUser user, string roleName);
     }
 }

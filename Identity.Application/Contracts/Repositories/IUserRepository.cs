@@ -5,8 +5,8 @@ namespace Identity.Application.Contracts.Repositories
 {
     public interface IUserRepository
     {
-        Task<TokenDto> Login(LoginDto loginDto);
-        Task<bool> AddUser(ApplicationUser usuario);
+        //Task<TokenDto> Login(LoginDto loginDto);
+        //Task<bool> AddUser(ApplicationUser usuario);
 
     }
 }
