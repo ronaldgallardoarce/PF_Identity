@@ -7,38 +7,36 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.Repository
 {
-    public class AuthRepository:IAuthRepository
+    public class AuthRepository : IAuthRepository
     {
         private UserManager<ApplicationUser> _userManager;
         private ContextPostgreSQL _contextPostgres;
         private readonly IJwtTokenRepository _jwtTokenRepository;
-        public AuthRepository(ContextPostgreSQL contextPostgres, UserManager<ApplicationUser> userManager, IJwtTokenRepository jwtTokenRepository)
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        public AuthRepository(ContextPostgreSQL contextPostgres, UserManager<ApplicationUser> userManager, IJwtTokenRepository jwtTokenRepository, IRefreshTokenRepository refreshTokenRepository)
         {
             _contextPostgres = contextPostgres;
             _userManager = userManager;
             _jwtTokenRepository = jwtTokenRepository;
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
-        public async Task<TokenDto> Login(LoginDto loginDto)
+        public async Task<TokenDto> Login(LoginDto loginDto, string ipAddress)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            if (user == null)
+            if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
             {
                 return null;
             }
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, loginDto.Password);
-            if (!isPasswordValid)
-            {
-                return null;
 
-            }
             var roles = await _userManager.GetRolesAsync(user);
-            var token = _jwtTokenRepository.GenerateToken(user, roles);
+            var accesstoken = _jwtTokenRepository.GenerateToken(user, roles);
+            var refreshToken = await _refreshTokenRepository.CreateAsync(user.Id, ipAddress);
 
             return new TokenDto
             {
-                Token = token,
-                Expiration = DateTime.UtcNow.AddDays(1)
+                AccessToken = accesstoken,
+                RefreshToken = refreshToken.Token
             };
         }
 
@@ -62,7 +60,7 @@ namespace Identity.Infrastructure.Repository
         {
             Random rnd = new Random();
             int code = rnd.Next(10000, 99999);
-            ApplicationUser applicationUser = await _contextPostgres.Users.FirstOrDefaultAsync(u=> u.UserName == user.UserName);
+            ApplicationUser applicationUser = await _contextPostgres.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName);
             if (applicationUser != null)
             {
                 applicationUser!.VerificationCode = code.ToString();
@@ -86,6 +84,49 @@ namespace Identity.Infrastructure.Repository
                 return true;
             }
             return false;
+        }
+
+        public async Task<bool> ConfirmEmail(string email, string code)
+        {
+            var user = await _contextPostgres.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null && user.VerificationCode == code)
+            {
+                user.EmailConfirmed = true;
+                user.IsActive = true;
+                await _contextPostgres.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> LogoutAsync(string userId)
+        {
+            var result = await _refreshTokenRepository.RevokeAllTokensByUserIdAsync(userId);
+            return result;
+        }
+
+        public async Task<TokenDto> RefreshTokenAsync(string RefreshToken, string ipAddress)
+        {
+            var storedToken = await _refreshTokenRepository.GetByTokenAsync(RefreshToken);
+            if (storedToken == null || storedToken.IsRevoked || storedToken.IsUsed || storedToken.ExpiryDate < DateTime.UtcNow)
+                throw new ApplicationException("Refresh token inválido.");
+
+            storedToken.IsUsed = true;
+            await _refreshTokenRepository.UpdateAsync(storedToken);
+
+            var user = await _userManager.FindByIdAsync(storedToken.UserId);
+            if (user == null)
+                throw new ApplicationException("Usuario no encontrado.");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var newAccessToken = _jwtTokenRepository.GenerateToken(user, roles);
+            var newRefreshToken = await _refreshTokenRepository.CreateAsync(user.Id, ipAddress);
+
+            return new TokenDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken.Token
+            };
         }
     }
 }

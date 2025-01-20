@@ -98,7 +98,7 @@ namespace Identity.Application.Services
                                 <p>This is your code to verify your account</p>
                                 <p>{code}</p>
                                 <p>Please click the button below to confirm your email address and activate your account.</p>
-                                <a href='http://localhost:7187/api/Auth/ConfirmEmail?email={email}&code={code}'>CONFIRM EMAIL</a>
+                                <a href='https://localhost:7187/api/Auth/ConfirmEmail?email={email}&code={code}'>CONFIRM EMAIL</a>
                                 <p>If you received this in error, simply ignore this email and do not click the button.</p>
                             </div>
                             <div class='email-footer'>
