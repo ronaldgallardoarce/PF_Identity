@@ -67,6 +67,8 @@ namespace Identity.Infrastructure
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IEmailTemplateService, EmailTemplateService>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IUserProfileService, UserProfileService>();
+            services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             return services;
         }
     }
