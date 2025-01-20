@@ -14,10 +14,12 @@ namespace Identity.Api.Controllers
     public class AuthController : ControllerBase
     {
         private IAuthService _authService;
+        private readonly IJwtValidator _jwtValidator;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IJwtValidator jwtValidator)
         {
             _authService = authService;
+            _jwtValidator = jwtValidator;
         }
 
         [HttpPost("Login")]
@@ -81,6 +83,18 @@ namespace Identity.Api.Controllers
 
             var result = await _authService.LogoutAsync(userId);
             return NoContent();
+        }
+        [HttpPost("validate-token")]
+        public IActionResult ValidateToken( string token)
+        {
+            var principal = _jwtValidator.ValidateToken(token);
+
+            if (principal == null)
+            {
+                return Unauthorized("Invalid or expired token.");
+            }
+
+            return Ok(new { message = "Token is valid", claims = principal.Claims });
         }
     }
 }

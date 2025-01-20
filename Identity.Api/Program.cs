@@ -1,3 +1,4 @@
+using Identity.Api.Middlewares;
 using Identity.Domain.Entities;
 using Identity.Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -21,6 +22,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+//app.UseMiddleware<AutenticationMiddleware>();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
