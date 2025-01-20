@@ -35,19 +35,23 @@ namespace Identity.Infrastructure
                 .AddEntityFrameworkStores<ContextPostgreSQL>()
                 .AddDefaultTokenProviders();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["Jwt:Issuer"],
-                    ValidAudience = configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
-                }
-                );
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+            }
+            );
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAuthRepository, AuthRepository>();
@@ -58,6 +62,7 @@ namespace Identity.Infrastructure
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IEmailTemplateService, EmailTemplateService>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             return services;
         }
     }

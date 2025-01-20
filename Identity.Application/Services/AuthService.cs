@@ -50,9 +50,9 @@ namespace Identity.Application.Services
             return false;
         }
 
-        public Task<TokenDto> Login(LoginDto loginDto)
+        public async Task<TokenDto> Login(LoginDto loginDto, string ipAddress)
         {
-            var result = _authRepository.Login(loginDto);
+            var result = await _authRepository.Login(loginDto, ipAddress);
             return result;
         }
 
@@ -72,6 +72,24 @@ namespace Identity.Application.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<bool> ConfirmEmail(string email, string code)
+        {
+            var result = await _authRepository.ConfirmEmail(email, code);
+            return result;
+        }
+
+        public async Task<bool> LogoutAsync(string userId)
+        {
+            var result = await _authRepository.LogoutAsync(userId);
+            return result;
+        }
+
+        public async Task<TokenDto> RefreshTokenAsync(string RefreshToken, string ipAddress)
+        {
+            var result = await _authRepository.RefreshTokenAsync(RefreshToken, ipAddress);
+            return result;
         }
     }
 }
