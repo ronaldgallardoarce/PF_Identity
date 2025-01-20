@@ -21,7 +21,11 @@ namespace Identity.Infrastructure
             services.AddEntityFrameworkNpgsql().AddDbContext<ContextPostgreSQL>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("conexion")));
 
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("CustomerAccess", policy => policy.RequireRole("Customer"));
+            });
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 8;
