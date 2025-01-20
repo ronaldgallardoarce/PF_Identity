@@ -113,5 +113,133 @@ namespace Identity.Application.Services
                     </body>
                     </html>";
         }
+        public string GenerateUserUpdatedEmail(string userName)
+        {
+            return $@"
+            <!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Profile Updated</title>
+                <style>
+                    /* Mismos estilos que usamos en GenerateRegisterUserEmail */
+                </style>
+            </head>
+            <body>
+                <div class='email-container'>
+                    <div class='email-header'>
+                        <img src='https://t3.ftcdn.net/jpg/04/87/55/66/360_F_487556662_gYeUPwaDaq2cUnO8OMaYhyRgbcPUevZe.jpg' alt='Email Icon'>
+                        <h1>Profile Updated Successfully</h1>
+                    </div>
+                    <div class='email-body'>
+                        <h1>Hello {userName}</h1>
+                        <p>Your profile has been successfully updated in our system.</p>
+                        <p>If you did not make these changes, please contact our support team immediately.</p>
+                    </div>
+                    <div class='email-footer'>
+                        <p>Copyright © 2025, UPDS</p>
+                    </div>
+                </div>
+            </body>
+            </html>";
+        }
+
+        public string GenerateUserDeletedEmail(string userName)
+        {
+            return $@"
+            <!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Account Deleted</title>
+                <style>
+                    /* Mismos estilos que usamos en GenerateRegisterUserEmail */
+                </style>
+            </head>
+            <body>
+                <div class='email-container'>
+                    <div class='email-header'>
+                        <img src='https://t3.ftcdn.net/jpg/04/87/55/66/360_F_487556662_gYeUPwaDaq2cUnO8OMaYhyRgbcPUevZe.jpg' alt='Email Icon'>
+                        <h1>Account Deleted</h1>
+                    </div>
+                    <div class='email-body'>
+                        <h1>Goodbye {userName}</h1>
+                        <p>Your account has been successfully deleted from our system.</p>
+                        <p>We're sorry to see you go. If you wish to rejoin in the future, you can create a new account.</p>
+                    </div>
+                    <div class='email-footer'>
+                        <p>Copyright © 2025, UPDS</p>
+                    </div>
+                </div>
+            </body>
+            </html>";
+        }
+
+        public string GenerateUserDeactivatedEmail(string userName)
+        {
+            return $@"
+            <!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Account Deactivated</title>
+                <style>
+                    /* Mismos estilos que usamos en GenerateRegisterUserEmail */
+                </style>
+            </head>
+            <body>
+                <div class='email-container'>
+                    <div class='email-header'>
+                        <img src='https://t3.ftcdn.net/jpg/04/87/55/66/360_F_487556662_gYeUPwaDaq2cUnO8OMaYhyRgbcPUevZe.jpg' alt='Email Icon'>
+                        <h1>Account Deactivated</h1>
+                    </div>
+                    <div class='email-body'>
+                        <h1>Hello {userName}</h1>
+                        <p>Your account has been temporarily deactivated.</p>
+                        <p>If you believe this was done in error, please contact our support team.</p>
+                    </div>
+                    <div class='email-footer'>
+                        <p>Copyright © 2025, UPDS</p>
+                    </div>
+                </div>
+            </body>
+            </html>";
+        }
+
+        public string GenerateUserActivatedEmail(string userName)
+        {
+            return $@"
+            <!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Account Activated</title>
+                <style>
+                    /* Mismos estilos que usamos en GenerateRegisterUserEmail */
+                </style>
+            </head>
+            <body>
+                <div class='email-container'>
+                    <div class='email-header'>
+                        <img src='https://t3.ftcdn.net/jpg/04/87/55/66/360_F_487556662_gYeUPwaDaq2cUnO8OMaYhyRgbcPUevZe.jpg' alt='Email Icon'>
+                        <h1>Account Activated</h1>
+                    </div>
+                    <div class='email-body'>
+                        <h1>Welcome back {userName}!</h1>
+                        <p>Your account has been successfully activated.</p>
+                        <p>You can now log in and access all features of our platform.</p>
+                    </div>
+                    <div class='email-footer'>
+                        <p>Copyright © 2025, UPDS</p>
+                    </div>
+                </div>
+            </body>
+            </html>";
+        }
+
     }
 }

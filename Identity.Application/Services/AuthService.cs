@@ -32,8 +32,8 @@ namespace Identity.Application.Services
             if (result)
             {
                 int codeForSend = await _authRepository.AddVerificationCode(user);
-                await _roleRepository.CreateRole("Client");
-                await _roleRepository.AssignRoleToUserAsync(user, "Client");
+                await _roleRepository.CreateRole("Customer");
+                await _roleRepository.AssignRoleToUserAsync(user, "Customer");
                 if(codeForSend != 0)
                 {
                     EmailToSend email = new EmailToSend
