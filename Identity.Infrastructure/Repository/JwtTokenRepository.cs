@@ -31,7 +31,7 @@ namespace Identity.Infrastructure.Repository
                 new Claim(ClaimTypes.Email, user.Email)
             };
 
-            //claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
