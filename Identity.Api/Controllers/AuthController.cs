@@ -84,17 +84,17 @@ namespace Identity.Api.Controllers
             var result = await _authService.LogoutAsync(userId);
             return NoContent();
         }
-        [HttpPost("validate-token")]
-        public IActionResult ValidateToken( string token)
-        {
-            var principal = _jwtValidator.ValidateToken(token);
+        //[HttpPost("validate-token")]
+        //public IActionResult ValidateToken( string token)
+        //{
+        //    var principal = _jwtValidator.ValidateToken(token);
 
-            if (principal == null)
-            {
-                return Unauthorized("Invalid or expired token.");
-            }
+        //    if (principal == null)
+        //    {
+        //        return Unauthorized("Invalid or expired token.");
+        //    }
 
-            return Ok(new { message = "Token is valid", claims = principal.Claims });
-        }
+        //    return Ok(new { message = "Token is valid", claims = principal.Claims });
+        //}
     }
 }
