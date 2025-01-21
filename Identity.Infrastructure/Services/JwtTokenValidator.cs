@@ -1,4 +1,5 @@
 ﻿using Identity.Application.Contracts;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,17 +9,17 @@ namespace Identity.Infrastructure.Services
 {
     public class JwtTokenValidator: IJwtValidator
     {
-        private readonly string _key;
+        private readonly IConfiguration _configuration;
 
-        public JwtTokenValidator(string key)
+        public JwtTokenValidator(IConfiguration configuration)
         {
-            _key = key;
+            _configuration = configuration;
         }
 
         public ClaimsPrincipal? ValidateToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_key);
+            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
 
             try
             {

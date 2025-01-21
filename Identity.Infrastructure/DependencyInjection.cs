@@ -60,7 +60,6 @@ namespace Identity.Infrastructure
 
             //middleware
             services.AddSingleton<IJwtValidator, JwtTokenValidator>();
-            services.AddSingleton(sp => new JwtTokenValidator(configuration["Jwt:Key"]));
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAuthRepository, AuthRepository>();
